@@ -5,6 +5,44 @@ Built with `Streamlit + LangChain + OpenAI + Pinecone`, it generates answers gro
 
 ---
 
+## What I Built
+
+- Built an end-to-end legal Q&A chatbot using a production-style RAG architecture
+- Implemented a query normalization layer to map everyday language to legal terminology before retrieval
+- Added history-aware retrieval so follow-up questions can be understood without losing context
+- Designed prompt constraints and few-shot examples to enforce concise, statute-first answers
+
+---
+
+## Why It Matters
+
+- Legal Q&A systems must prioritize **accuracy and traceability**, not just fluency
+- RAG reduces hallucinations by grounding responses in retrieved legal sources
+- Domain-specific normalization improves retrieval quality for real user language
+- The project demonstrates practical LLM engineering for high-stakes, evidence-based use cases
+
+---
+
+## Engineering Decisions
+
+- **RAG over fine-tuning**: chose retrieval-based grounding for faster iteration and easier source updates
+- **Pinecone + OpenAI embeddings**: selected for semantic search quality and operational simplicity
+- **History-aware retriever**: added to handle conversational follow-ups without sacrificing relevance
+- **Few-shot response control**: used to maintain consistent legal format and response length
+- **Streamlit frontend**: prioritized speed of prototyping and demonstration for product iteration
+
+---
+
+## Trade-offs
+
+- **Pros**: stronger factual grounding, better maintainability, and clearer behavior boundaries
+- **Cons**: response quality depends on chunking/index quality and retriever recall
+- **Latency cost**: retrieval + generation is slower than direct generation-only approaches
+- **Scope limit**: the current app is tailored to one legal domain and one primary index
+- **Memory layer**: in-memory chat history is simple but not durable across processes
+
+---
+
 ## Project Goal
 
 This project is designed to prioritize **retrieved statutory evidence** over unsupported model guesses.
