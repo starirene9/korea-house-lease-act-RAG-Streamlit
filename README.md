@@ -1,111 +1,111 @@
 # Housing Lease Protection Act RAG Chatbot
 
-주택임대차보호법 질의응답에 특화된 **RAG(Retrieval-Augmented Generation)** 챗봇입니다.  
-`Streamlit + LangChain + OpenAI + Pinecone` 조합으로, 법률 문서 검색 결과를 근거로 답변을 생성합니다.
+A **Retrieval-Augmented Generation (RAG)** chatbot specialized for Q&A on Korea's **Housing Lease Protection Act (주택임대차보호법)**.  
+Built with `Streamlit + LangChain + OpenAI + Pinecone`, it generates answers grounded in retrieved legal text rather than model-only memory.
 
 ---
 
-## 프로젝트 목적
+## Project Goal
 
-이 프로젝트는 "모델이 아는 것"이 아니라 "검색된 법 조문"을 우선 근거로 답변하도록 설계되었습니다.
+This project is designed to prioritize **retrieved statutory evidence** over unsupported model guesses.
 
-- 주택임대차보호법 관련 질문에 대한 신뢰도 높은 응답 제공
-- 문서 근거 없는 추측성 답변 최소화
-- 짧고 일관된 법률 답변 포맷 유지
-
----
-
-## 주요 기능
-
-- **법률 RAG 파이프라인**: 법 조문 검색 + 근거 기반 생성
-- **질문 정규화(Dictionary Chain)**: 생활 용어를 법률 용어로 변환
-- **히스토리 기반 질의 재작성**: 대화 문맥을 반영해 독립 질문으로 재구성
-- **Few-shot 답변 제어**: 조문 중심 응답 스타일 유도
-- **간결한 출력 형식**: 2~3문장 위주의 실무형 답변
+- Deliver reliable, law-focused answers for lease-related questions
+- Minimize hallucinations by constraining responses to retrieved context
+- Keep outputs concise and consistent in a legal response format
 
 ---
 
-## 기술 스택
+## Key Features
+
+- **Legal RAG pipeline**: retrieve relevant provisions and generate evidence-grounded responses
+- **Query normalization (Dictionary Chain)**: map informal terms to official legal terminology
+- **History-aware question rewriting**: convert follow-up questions into standalone queries
+- **Few-shot response control**: enforce a statute-first legal answer style
+- **Concise outputs**: responses are intentionally short (typically 2-3 sentences)
+
+---
+
+## Tech Stack
 
 - **UI**: Streamlit
-- **LLM**: OpenAI Chat Models (`langchain-openai`)
-- **Embedding**: OpenAI `text-embedding-3-large`
-- **Vector DB**: Pinecone
+- **LLM**: OpenAI chat models (`langchain-openai`)
+- **Embeddings**: OpenAI `text-embedding-3-large`
+- **Vector Database**: Pinecone
 - **Orchestration**: LangChain (retriever, retrieval chain, message history)
 
 ---
 
-## 동작 흐름
+## How It Works
 
-1. 사용자가 질문 입력
-2. 질문 정규화 체인에서 용어 정리
-3. 히스토리 기반 질문 재작성
-4. Pinecone에서 관련 문서 검색 (`top-k`)
-5. 검색 문맥을 근거로 최종 답변 생성
-
----
-
-## 프로젝트 구조
-
-- `chat.py`: Streamlit 챗 UI 엔트리포인트
-- `llm.py`: RAG/체인 구성, 히스토리 관리, 응답 생성
-- `config.py`: Few-shot 예시 질문/답변
-- `requirements.txt`: 의존성 목록
-- `documents/`: 문서 원본/관련 파일
+1. A user submits a legal question in the chat UI.
+2. The Dictionary Chain normalizes wording into legal terminology.
+3. A history-aware retriever rewrites the query (if needed) using chat context.
+4. Relevant legal chunks are retrieved from Pinecone (`top-k`).
+5. The LLM generates a final response grounded in retrieved context.
 
 ---
 
-## 빠른 시작
+## Project Structure
 
-### 1) 가상환경 생성 및 활성화
+- `chat.py`: Streamlit chat UI entry point
+- `llm.py`: RAG pipeline, retriever setup, history management, response generation
+- `config.py`: few-shot examples used to control answer style
+- `requirements.txt`: project dependencies
+- `documents/`: source/legal document assets
+
+---
+
+## Quick Start
+
+### 1) Create and activate a virtual environment
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 2) 의존성 설치
+### 2) Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3) 환경 변수 설정
+### 3) Configure environment variables
 
-프로젝트 루트에 `.env` 파일을 만들고 아래 값을 설정하세요.
+Create a `.env` file in the project root:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key
 PINECONE_API_KEY=your_pinecone_api_key
 ```
 
-> 현재 코드 기준 Pinecone 인덱스 이름은 `tax-markdown-index`입니다.
+> The current code uses the Pinecone index name `tax-markdown-index`.
 
-### 4) 앱 실행
+### 4) Run the app
 
 ```bash
 source .venv/bin/activate
 streamlit run chat.py
 ```
 
-브라우저에서 기본 URL `http://localhost:8501`로 접속합니다.
+Open `http://localhost:8501` in your browser.
 
 ---
 
-## 보안 안내 (필수)
+## Security Notes (Important)
 
-- `.env`는 API 키 등 민감정보를 포함하므로 **절대 커밋 금지**
-- `.gitignore`에 아래 항목이 포함되어 기본적으로 Git 추적 제외
+- Never commit `.env` files containing API keys or secrets.
+- The following are already excluded via `.gitignore`:
   - `.env`
   - `.venv/`
   - `.streamlit/secrets.toml`
-- 푸시 전 `git status`로 커밋 대상 파일을 항상 확인하세요
+- Always check `git status` before every commit/push.
 
 ---
 
-## 향후 개선 아이디어
+## Potential Improvements
 
-- 검색 정확도 향상을 위한 메타데이터/인덱스 설계 개선
-- 조문 출처 표시 포맷 및 인용 체계 강화
-- 세션 히스토리 영속화(Redis/DB)
-- 체인/프롬프트 회귀 테스트 자동화
+- Improve retrieval precision with better metadata/index design
+- Strengthen citation formatting for statutory references
+- Persist chat history in Redis/DB for multi-session use
+- Add regression tests for prompts and chain behavior
